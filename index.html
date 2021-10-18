@@ -63,7 +63,7 @@
                 </div>
             </div>
             <div class="col-sm">
-                One of three columns
+                <textarea class="form-control" id="log1" rows="8"></textarea>
             </div>
             <button type="button" class="btn btn-danger" onclick="battle_step();">Fight!</button>
         </div>
@@ -91,6 +91,7 @@
         setHeath('vas-hp');
         setHeath('pet-hp');
         updateStats();
+        $("#log1").val("");
     });
 
     function setHeath(charName, neededVal=-1) {
@@ -123,9 +124,11 @@
             var pet_health = parseInt($(".pet-hp").text())
             var pet_health = pet_health - damage;
             setHeath('pet-hp', pet_health)
-            $( "<p>Вася наносит "+ damage + " урона</p>" ).appendTo( "#log" );
+            // $( "<p>Вася наносит "+ damage + " урона</p>" ).appendTo( "#log" );
+            addLog("Вася наносит "+ damage + " урона");
         } else {
-            $( "<p>Вася промахивается</p>" ).appendTo( "#log" );
+            // $( "<p>Вася промахивается</p>" ).appendTo( "#log" );
+            addLog("Вася промахивается");
         }
 
         if(pet_hit){
@@ -134,10 +137,22 @@
             var vas_health = parseInt($(".vas-hp").text())
             var vas_health = vas_health - damage;
             setHeath('vas-hp', vas_health)
-            $( "<p>Петя наносит "+ damage + " урона</p>" ).appendTo( "#log" );
+            // $( "<p>Петя наносит "+ damage + " урона</p>" ).appendTo( "#log" );
+            addLog("Петя наносит "+ damage + " урона");
         } else {
-            $( "<p>Петя промахивается</p>" ).appendTo( "#log" );
+            // $( "<p>Петя промахивается</p>" ).appendTo( "#log" );
+            addLog("Петя промахивается");
         }
+        addLog("------------------");
+    }
+
+    function addLog(logVal) {
+        $( `<p>${logVal}</p>` ).appendTo( "#log" );
+        var oldVal = $("#log1").val();
+        console.log("#" + oldVal + "#");
+        var newVal = oldVal == ""? logVal : oldVal + "\n" + logVal;
+        $("#log1").val(newVal);
+        document.getElementById("log1").scrollTop = document.getElementById("log1").scrollHeight
     }
 </script>
 </html>
