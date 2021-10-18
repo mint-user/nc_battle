@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.min.js" integrity="sha384-PsUw7Xwds7x08Ew3exXhqzbhuEYmA2xnwc8BuD6SEr+UmEHlX8/MCltYEodzWA4u" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>Battle</title>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Battle</a>
+        </nav>
+        <div class="row">
+            <div class="col-sm border">
+                <p class="text-center">Вася</p>
+                <div class="row">
+                    <label for="staticEmail2" class="col">Health</label>
+                    <div class="progress col" style="height: 20px;">
+                        <div class="progress-bar bg-success vas-hp" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">100</div>
+                    </div>
+                    <input type="number" onchange="setHeath('vas-hp')" class="form-control col-sm" id="vas-hp" value="100">
+                </div>
+                <div class="row">
+                    <label for="staticEmail2" class="col">Strenth</label>
+                    <input type="number" onchange="updateStats()" class="form-control col-sm" id="str1" value="5">
+
+                </div>
+                <div class="row">
+                    <label for="staticEmail2" class="col">Agility</label>
+                    <input type="number" onchange="updateStats()" class="form-control col-sm" id="agi1" value="5">
+                </div>
+                <div class="row">
+                    <label for="staticEmail2" class="col">Stamina</label>
+                    <input type="number" onchange="updateStats()" class="form-control col-sm" id="sta1" value="5">
+                </div>
+            </div>
+            <div class="col-sm border">
+                <p class="text-center">Петя</p>
+                <div class="row">
+                    <label for="staticEmail2" class="col">Health</label>
+                    <div class="progress col">
+                        <div class="progress-bar bg-success pet-hp" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">100%</div>
+                    </div>
+                    <input type="number" onchange="setHeath('pet-hp')" class="form-control col-sm" id="pet-hp" value="100">
+                </div>
+                <div class="row">
+                    <label for="staticEmail2" class="col">Strenth</label>
+                    <input type="number" onchange="updateStats()" class="form-control col-sm" id="str2" value="5">
+
+                </div>
+                <div class="row">
+                    <label for="staticEmail2" class="col">Agility</label>
+                    <input type="number" onchange="updateStats()" class="form-control col-sm" id="agi2" value="5">
+                </div>
+                <div class="row">
+                    <label for="staticEmail2" class="col">Stamina</label>
+                    <input type="number" onchange="updateStats()" class="form-control col-sm" id="sta2" value="5">
+                </div>
+            </div>
+            <div class="col-sm">
+                One of three columns
+            </div>
+            <button type="button" class="btn btn-danger" onclick="battle_step();">Fight!</button>
+        </div>
+        <div class="row" id="log"></div>
+    </div>
+</body>
+<script>
+    function getInitHealth(charName) {
+        return parseInt($(`#${charName}`).val())
+    }
+
+    function updateStats() {
+        vasStrength = parseInt($("#str1").val());
+        vasAgilty = parseInt($("#agi1").val());
+        vasStamina = parseInt($("#sta1").val());
+    
+        petStrength = parseInt($("#str2").val());
+        petAgilty = parseInt($("#agi2").val());
+        petStamina = parseInt($("#sta2").val());
+    }
+
+    $(document).ready(function() {
+        // pet_health_init = parseInt($(".pet-hp").text());
+        // vas_health_init = parseInt($(".vas-hp").text());
+        setHeath('vas-hp');
+        setHeath('pet-hp');
+        updateStats();
+    });
+
+    function setHeath(charName, neededVal=-1) {
+        var progressBarEl = $(`.${charName}`);
+        var inputEl = $(`#${charName}`);
+        if (neededVal==-1) { //took from input
+            neededVal = parseInt(inputEl.val())
+            progressBarEl.css("width", 100 + "%").text(neededVal)
+            // inputEl.val(neededVal)
+        } else { //result of damage or heal
+            // var init = charName == 'vas-hp' ? vas_health_init : pet_health_init
+            var init = getInitHealth(charName)
+            var healthProc = parseInt(neededVal/init*100);
+            progressBarEl.css("width", healthProc + "%").text(neededVal)
+            // inputEl.val(neededVal)
+        }
+    }
+
+    function battle_step(){
+        // will vasya hit?
+        var randAgilty = Math.floor(Math.random() * 6) - 2;
+        var vas_hit = 0 < vasAgilty - petAgilty + randAgilty ? true : false;
+
+        // will petya hit?
+        randAgilty = Math.floor(Math.random() * 6) - 2;
+        var pet_hit = 0 < petAgilty - vasAgilty + randAgilty ? true : false;
+
+        if(vas_hit){
+            var damage = vasStrength - petStamina*0.5;
+            var pet_health = parseInt($(".pet-hp").text())
+            var pet_health = pet_health - damage;
+            setHeath('pet-hp', pet_health)
+            $( "<p>Вася наносит "+ damage + " урона</p>" ).appendTo( "#log" );
+        } else {
+            $( "<p>Вася промахивается</p>" ).appendTo( "#log" );
+        }
+
+        if(pet_hit){
+            var damage = petStrength - vasStamina*0.5;
+            console.log(damage);
+            var vas_health = parseInt($(".vas-hp").text())
+            var vas_health = vas_health - damage;
+            setHeath('vas-hp', vas_health)
+            $( "<p>Петя наносит "+ damage + " урона</p>" ).appendTo( "#log" );
+        } else {
+            $( "<p>Петя промахивается</p>" ).appendTo( "#log" );
+        }
+    }
+</script>
+</html>
